@@ -1,8 +1,28 @@
+
+
 import streamlit as st 
 import pandas as pd
 import numpy as np
+import os
+import re
 
-st.title('Need to find an Uber in NYC?')
+code = """<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-197647129-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-197647129-1');
+</script>"""
+
+a=os.path.dirname(st.__file__) + '/static/index.html'
+with open(a, 'r') as f:
+    data=f.read()
+    if len(re.findall('UA-', data)) == 0:
+        with open(a, 'w') as f:
+            newdata=re.sub('<head>','<head>' + code, data)
+            f.write(newdata)
+st.title('Need to know how many Uber are currently in NYC?')
 Date_Column= "date/time"
 Data_Url= ('https://s3-us-west-2.amazonaws.com/''streamlit-demo-data/uber-raw-data-sep14.csv.gz')
 
