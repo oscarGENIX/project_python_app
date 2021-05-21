@@ -1,1 +1,1 @@
-only dependency: streamlit 
+streamlit 
