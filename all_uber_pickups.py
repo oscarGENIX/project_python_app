@@ -52,6 +52,6 @@ st.subheader(f'Map of all pickups at{hour_to_filter}:00')
 st.map(filtered_data)
 
 
-if st.checkbox('Wanna see all the pickups during today? '): 
+if st.checkbox('Wanna see all the pickups made today? '): 
     st.subheader('Map of all pickups')
     st.map(data2)
