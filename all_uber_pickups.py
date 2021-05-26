@@ -1,10 +1,10 @@
-
-
 import streamlit as st 
 import pandas as pd
 import numpy as np
 import os
 import re
+import logging
+
 
 code = """<!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-197647129-1"></script>
@@ -42,6 +42,10 @@ if st.checkbox('Show raw data'):
     st.subheader('Raw data')
     st.write(data2)
 
+name = st.text_input("entrez ici votre nom", value ="", max_chars=None, key=None, type="default", )
+if name == "oscar": 
+    logging.warning(' this name is already on the DB ')
+st.write ("your name is: ", name )
 st.subheader('Number of pickups by hour')
 hist_values = np.histogram(data2[Date_Column].dt.hour, bins=24, range=(0,24))[0]
 st.bar_chart(hist_values)
