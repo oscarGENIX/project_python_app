@@ -4,6 +4,14 @@ import numpy as np
 import os
 import re
 import logging
+import requests
+import matplotlib.pyplot as plt
+from pytrends.request import TrendReq
+
+
+
+
+
 
 
 code = """<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -45,7 +53,11 @@ if st.checkbox('Show raw data'):
 name = st.text_input("entrez ici votre nom", value ="", max_chars=None, key=None, type="default", )
 if name == "oscar": 
     logging.warning(' this name is already on the DB ')
+st.button('enter')
+
 st.write ("your name is: ", name )
+
+
 st.subheader('Number of pickups by hour')
 hist_values = np.histogram(data2[Date_Column].dt.hour, bins=24, range=(0,24))[0]
 st.bar_chart(hist_values)
@@ -59,3 +71,15 @@ st.map(filtered_data)
 if st.checkbox('Wanna see all the pickups made today? '): 
     st.subheader('Map of all pickups')
     st.map(data2)
+req = requests.get("https://www.google.com/")
+st.markdown(req.cookies._cookies)
+req2 = requests.get("https://analytics.google.com/analytics/web/#/report-home/a197647129w273277126p243459380")
+st.text(req2.status_code)
+st.markdown(req2.text)
+
+
+pytrends = TrendReq(hl='en-US', tz=360)
+searchTrend = ['Blockchain', 'Wine', 'Beer']
+pytrends.build_payload(searchTrend, timeframe = '2020-01-01 2021-01-01', geo='US')
+data = pytrends.interest_over_time()
+st.line_chart(data)
