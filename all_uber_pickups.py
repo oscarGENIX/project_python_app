@@ -7,6 +7,7 @@ import logging
 import requests
 import matplotlib.pyplot as plt
 from pytrends.request import TrendReq
+from collections import Counter 
 
 
 
@@ -79,7 +80,66 @@ st.markdown(req2.text)
 
 
 pytrends = TrendReq(hl='en-US', tz=360)
-searchTrend = ['Blockchain', 'Wine', 'Beer']
+searchTrend = ['Wine', 'Beer']
 pytrends.build_payload(searchTrend, timeframe = '2020-01-01 2021-01-01', geo='US')
 data = pytrends.interest_over_time()
 st.line_chart(data)
+
+
+exec_times_counter = []
+exec_times_dico = []
+
+def timer(fn):
+    from time import perf_counter
+    def inner(*args, **kwargs):
+        start_time = perf_counter()
+        to_execute = fn(*args, **kwargs)
+        end_time = perf_counter()
+        execution_time = end_time - start_time
+        if(fn.__name__ == "counting_words_counter"):
+            exec_times_counter.append(execution_time)
+        if(fn.__name__ == "counting_words_dictionnary"):
+            exec_times_dico.append(execution_time)
+        print("{0} took {1:.8f}s to execute".format(fn.__name__, execution_time))
+        return to_execute
+    
+    return inner
+    
+@timer
+def counting_words_dictionnary(filename):
+    file = open(filename)
+    str = file.read().replace("\n", " ")
+    counts = dict()
+    words = str.split()
+    for word in words:
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+
+    return counts
+
+def readFile(filename):
+    with open(filename, "r") as data:
+        text = data.read()
+    return re.findall('[a-z]+', text)
+
+@timer
+def counting_words_counter(filename):
+    res = readFile(filename)
+    return Counter(res)
+        
+
+st.markdown("Number of appearance for each words in shakespeare artwork file (using dictionnary):")
+st.text(counting_words_dictionnary("shakespeare.txt"))
+st.markdown("Number of appearance for each words in shakespeare artwork file (using counter):")
+st.text(counting_words_counter("shakespeare.txt"))
+
+for i in range(100):
+    counting_words_dictionnary("shakespeare.txt")
+    counting_words_counter("shakespeare.txt")
+
+st.markdown("**Chart showing execution times for 100 occurences of the function counting words with dictionnary**")
+st.line_chart(exec_times_dico)
+st.markdown("**Chart showing execution times for 100 occurences of the function counting words with counter**")
+st.line_chart(exec_times_counter)
