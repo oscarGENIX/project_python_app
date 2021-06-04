@@ -86,20 +86,20 @@ data = pytrends.interest_over_time()
 st.line_chart(data)
 
 
-exec_times_counter = []
-exec_times_dico = []
+execution_times_counter = []
+execution_times_dico = []
 
 def timer(fn):
     from time import perf_counter
     def inner(*args, **kwargs):
-        start_time = perf_counter()
+        deb_time = perf_counter()
         to_execute = fn(*args, **kwargs)
-        end_time = perf_counter()
-        execution_time = end_time - start_time
+        fin_time = perf_counter()
+        execution_time = fin_time - deb_time
         if(fn.__name__ == "counting_words_counter"):
-            exec_times_counter.append(execution_time)
+            execution_times_counter.append(execution_time)
         if(fn.__name__ == "counting_words_dictionnary"):
-            exec_times_dico.append(execution_time)
+            execution_times_dico.append(execution_time)
         print("{0} took {1:.8f}s to execute".format(fn.__name__, execution_time))
         return to_execute
     
@@ -130,16 +130,16 @@ def counting_words_counter(filename):
     return Counter(res)
         
 
-st.markdown("Number of appearance for each words in shakespeare artwork file (using dictionnary):")
+st.markdown("Number of appearance for each words in shakespeare file using Dictionnary:")
 st.text(counting_words_dictionnary("shakespeare.txt"))
-st.markdown("Number of appearance for each words in shakespeare artwork file (using counter):")
+st.markdown("Number of appearance for each words in shakespegit stare file using Counter:")
 st.text(counting_words_counter("shakespeare.txt"))
 
 for i in range(100):
     counting_words_dictionnary("shakespeare.txt")
     counting_words_counter("shakespeare.txt")
 
-st.markdown("**Chart showing execution times for 100 occurences of the function counting words with dictionnary**")
-st.line_chart(exec_times_dico)
-st.markdown("**Chart showing execution times for 100 occurences of the function counting words with counter**")
-st.line_chart(exec_times_counter)
+st.markdown("execution times for 100 occurences of the function counting words with dictionnary")
+st.line_chart(execution_times_dico)
+st.markdown("execution times for 100 occurences of the function counting words with counter")
+st.line_chart(execution_times_counter)
